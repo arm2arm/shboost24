@@ -1,0 +1,24 @@
+Bootstrap: docker
+From: python:3.10-slim
+
+%labels
+    Author Arman
+
+%post
+    # minimal system build deps
+    apt-get update && apt-get install -y --no-install-recommends         build-essential git curl ca-certificates libgomp1 python3-pip &&     rm -rf /var/lib/apt/lists/*
+
+    # upgrade pip and install python deps (pinned to match requirements.txt)
+    python3 -m pip install --upgrade pip
+    python3 -m pip install         mlflow==2.7.0         xgboost==1.7.5         pandas==2.2.2         numpy==1.26.4         scikit-learn==1.3.2         scipy==1.11.4         matplotlib==3.8.1         pyarrow==13.0.0         cloudpickle==2.2.1         s3fs==2024.6.1
+
+    mkdir -p /app
+
+%environment
+    export PATH=/usr/local/bin:/home/hermes/.local/bin:/home/hermes/.local/bin:/usr/local/cuda/bin:/opt/bin/:/home/hermes/.hermes/hermes-agent/venv/bin:/home/hermes/.hermes/hermes-agent/node_modules/.bin:/usr/bin:/home/hermes/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+    export MFL_PORT=5123
+    export ARTIFACT_ROOT=/data/mlruns
+
+%runscript
+    echo Container runscript: expects project mounted at /app
+    exec /bin/bash /app/entrypoint.sh 
