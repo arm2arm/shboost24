@@ -1,0 +1,25 @@
+# Local MLflow and build artifacts
+mlflow.db
+mlruns/
+/data/mlruns/
+# SIF / container images
+*.sif
+mlflow.sif
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+.env
+.venv/
+.envrc
+# Jupyter
+.ipynb_checkpoints/
+# caches
+.cache/
+pip-wheel-metadata/
+# editor files
+*.swp
+*.swo
+.DS_Store
