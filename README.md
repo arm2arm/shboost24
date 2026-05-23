@@ -57,3 +57,18 @@ Files of interest
 - requirements.txt      # Python dependencies
 - src/mlflowxgb.py      # Main training script
 
+
+Developer helpers
+
+- scripts/make_sample_parquet.py : create a small synthetic sample at data/sample.parq for smoke tests.
+- scripts/download_from_s3.py : download a public s3/http file into data/ (uses anon S3 access).
+- scripts/run_smoke.sh : helper to run a quick local smoke test (see below).
+
+Smoke test
+
+1) Create sample data: python3 scripts/make_sample_parquet.py
+2) Start MLflow server (inside apptainer or locally):
+   apptainer exec -B /data/mlruns:/data/mlruns -B /home/hermes:/app mlflow.sif /app/entrypoint.sh
+   or (server-only): apptainer exec -B /data/mlruns:/data/mlruns -B /home/hermes:/app mlflow.sif mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /data/mlruns --host 0.0.0.0 --port 5123
+3) Run training on sample: python3 src/mlflowxgb.py 0
+
