@@ -85,23 +85,40 @@ python src/mlflowxgb.py 4
 
 - Alternatively change the script to read configuration from a small JSON/YAML config file or environment variables.
 
-## Environment & dependencies
+## XGBoost parameter reference (common keys)
 
-Minimum dependencies (examples):
+Use this table as a starting point for `params` passed to `xgboost.train()` in `train_sh23_model`.
 
-- Python 3.8+
-- numpy, pandas
-- scikit-learn
-- scipy
-- matplotlib
-- xgboost
-- mlflow
+| Parameter | Type | Typical default | Meaning / Notes |
+|---|---:|---:|---|
+| objective | string | `reg:squarederror` | Specifies the learning task and the corresponding objective. For regression use `reg:squarederror`, for binary classification `binary:logistic`, etc. |
+| num_boost_round | int | 1000 | Number of boosting rounds. Use with early_stopping_rounds to avoid overfitting. |
+| early_stopping_rounds | int | (None) | Stop training if validation metric does not improve after this many rounds. |
+| eta (learning_rate) | float | 0.1 | Shrinkage factor; smaller is slower but often more accurate (use 0.01–0.3). |
+| max_depth | int | 6 | Maximum tree depth for base learners. Higher values increase model complexity. |
+| min_child_weight | float | 1 | Minimum sum of instance weight (hessian) needed in a child. Larger values prevent overfitting. |
+| subsample | float | 1.0 | Subsample ratio of the training instances. Typical values: 0.5–1.0. |
+| colsample_bytree | float | 1.0 | Subsample ratio of columns when constructing each tree. Typical: 0.3–1.0. |
+| colsample_bylevel | float | 1.0 | Subsample ratio of columns for each split, in each level. |
+| gamma | float | 0 | Minimum loss reduction required to make a further partition on a leaf node. |
+| reg_alpha | float | 0 | L1 regularization term on weights. Useful for sparse models. |
+| reg_lambda | float | 1 | L2 regularization term on weights. |
+| seed | int | 0 | Random seed for reproducibility. |
 
-Install with pip:
+Notes:
+- For regression tasks in this project `reg:squarederror` is commonly used. Tune `eta`, `max_depth`, `subsample`, and regularization to control overfitting and performance.
+- When using `mlflow.xgboost.autolog()` hyperparameters and parameters are recorded automatically in MLflow.
 
-```bash
-pip install numpy pandas scikit-learn scipy matplotlib xgboost mlflow
-```
+## Script-specific parameters and knobs
+
+| Name | Where | Type | Default / Example | Description |
+|---|---:|---:|---|---|
+| frac | `prepare_data` | float | 0.1 | Fraction of rows to sample from the input dataset. Set to 1.0 for full data. |
+| random_state | `prepare_data` | int | 0 | Controls reproducible sampling. |
+| fillvalue | `prepare_data` | float | -9.99 | Value used to fill missing features before training. |
+| mlflow_experiment_id | `train_sh23_model` | int | 1 | MLflow experiment id where runs are logged. |
+| weights | computed in `prepare_data` | array-like | — | Per-sample weights computed by a KDE on the label distribution. By default weights are used for training unless overridden for certain labels. |
+| pred_vec mapping | script header | list | mapping of indices to label names | Index used on the command line selects label (see Integer-to-label mapping). |
 
 ## Best practices
 
@@ -131,7 +148,7 @@ python src/mlflowxgb.py 4
 from src.mlflowxgb import fetch_data, prepare_data, train_sh23_model
 raw = fetch_data('/data/combined.parq')
 data = prepare_data(raw, 'met50', frac=1.0)
-params = {'objective':'reg:squarederror','eta':0.05,'max_depth':8}
+params = {'objective':'reg:squarederror','eta':0.05,'max_depth':8,'subsample':0.8,'colsample_bytree':0.8}
 train_sh23_model(data, params, 'met50', mlflow_experiment_id=2)
 ```
 
