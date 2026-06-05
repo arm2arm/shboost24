@@ -2,13 +2,13 @@
   "name": "shboost24-devcontainer",
   "build": {
     "dockerfile": "Dockerfile",
-    "context": "${localWorkspaceFolder}"
+    "context": ".."
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:3.0.1": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",
-      "moby": true,
-      "dockerDashComposeVersion": "v2"
+      "enableNonRootDocker": true,
+      "moby": false
     }
   },
   "runArgs": [

@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
+import sys
 from pathlib import Path
+
+# Add project root to path so 'src' module can be found
+sys.path.append(str(Path(__file__).parent.parent))
 from src import constants
 
 out = Path('data/sample.parq')

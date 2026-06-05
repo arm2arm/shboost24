@@ -1,8 +1,11 @@
 Bootstrap: docker
-From: python:3.10-slim
+From: python:3.12-slim
 
 %labels
     Author Arman
+
+%files
+    requirements.txt /requirements.txt
 
 %post
     # minimal system build deps
@@ -10,7 +13,7 @@ From: python:3.10-slim
 
     # upgrade pip and install python deps (pinned to match requirements.txt)
     python3 -m pip install --upgrade pip
-    python3 -m pip install         mlflow==2.7.0         xgboost==1.7.5         pandas==2.2.2         numpy==1.26.4         scikit-learn==1.3.2         scipy==1.11.4         matplotlib==3.8.1         pyarrow==13.0.0         cloudpickle==2.2.1         s3fs==2024.6.1
+    python3 -m pip install -r /requirements.txt
 
     mkdir -p /app
 

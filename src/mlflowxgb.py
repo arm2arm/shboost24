@@ -55,7 +55,7 @@ def plot_one_prediction(df_pred,label="",xl=[-10,10],yl=[-10,10]):#xl=[3.5,4.3],
     score=round(r2_score(xx, yy,multioutput='variance_weighted'),2)
     plt.title(label+f"score={score} Np="+str(len(df_pred[sel]["x"])))
     plt.xlabel("y")
-    plt.ylabel("$\^y$")
+    plt.ylabel(r"$\hat{y}$")
     plt.plot(xl,yl,color="black")
     plt.colorbar()
     fig_file=f"{label}.png"
