@@ -1,5 +1,34 @@
 Automl MLflow project
 
+Dev Container (Python 3.10 + Docker-in-Docker)
+
+This repository now includes a VS Code Dev Container setup in `.devcontainer/`.
+It provides:
+
+- Python 3.10.x development runtime
+- Project dependencies preinstalled from `requirements.txt`
+- Docker-in-Docker support so you can run `docker build` / `docker compose build` from inside the container
+
+How to use
+
+1) Install prerequisites on your host:
+   - Docker Desktop (or equivalent Docker Engine)
+   - VS Code extension: Dev Containers
+
+2) Open this repository in VS Code.
+
+3) Run: "Dev Containers: Reopen in Container".
+
+4) Verify inside the dev container terminal:
+   - `python --version` (should report 3.10.x)
+   - `docker version`
+   - `docker build -t automl-mlflow:dev .`
+
+Notes
+
+- The project runtime image in `Dockerfile` is still independent from the dev container setup.
+- The dev container uses a persistent Docker data volume (`/var/lib/docker`) so image layers survive container rebuilds.
+
 Quick start (single-container, development)
 
 1) Build the Docker image (run on a machine with Docker):

@@ -1,0 +1,33 @@
+{
+  "name": "shboost24-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "${localWorkspaceFolder}"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:3.0.1": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    }
+  },
+  "runArgs": [
+    "--privileged"
+  ],
+  "mounts": [
+    "type=volume,source=shboost24-dind-var-lib-docker,target=/var/lib/docker"
+  ],
+  "containerEnv": {
+    "PYTHONUNBUFFERED": "1"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
