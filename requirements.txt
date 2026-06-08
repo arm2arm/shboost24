@@ -8,4 +8,5 @@ matplotlib==3.9.2
 pyarrow==15.0.2
 cloudpickle==3.0.0
 s3fs==2025.5.1
+dask==2026.3.0
 
