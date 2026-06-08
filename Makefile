@@ -26,11 +26,17 @@ data/combined_trainingset2_with_xp_norm.ONE.parq:
 
 data: data/combined_trainingset2_with_xp_norm.ONE.parq
 
+# Extract arguments for run-% targets (e.g. make run-0 10)
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter run-%,$(firstword $(MAKECMDGOALS))))
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(RUN_ARGS):;@:)
+endif
+
 run-help:
 	python src/mlflowxgb.py --help
 
 run-%:
-	python src/mlflowxgb.py $* $(filter-out $@,$(MAKECMDGOALS))
+	python src/mlflowxgb.py $* $(RUN_ARGS) $(filter-out $@,$(MAKECMDGOALS))
 
 # Catch-all rule for extraneous arguments so make doesn't complain
 %:

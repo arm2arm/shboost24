@@ -1,6 +1,25 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+"""
+Transferring spectroscopic stellar labels to 217 million Gaia DR3 XP stars with SHBoost.
+
+Author: Dr. A.Khalatyan, 2024-2026, [Leibniz-Institut fuer Astrophysik Potsdam (AIP)](http://www.aip.de/) akhalatyan AT aip.de
+
+Project Summary:
+With Gaia Data Release 3 (DR3), new and improved astrometric, photometric, and
+spectroscopic measurements for 1.8 billion stars are available. This project explores
+the feasibility of using machine-learning regression as a method of extracting
+basic stellar parameters and line-of-sight extinctions, given spectro-photometric
+data. We use a stable gradient-boosted random-forest regressor (xgboost), trained
+on high-quality spectroscopic data, capable of producing output parameters with reliable 
+uncertainties from Gaia DR3 data (low-resolution XP spectra) without ground-based 
+spectroscopic observations. Using Shapley additive explanations, we interpret how 
+the predictions for each star are influenced by each data feature.
+
+More info: https://data.aip.de/projects/shboost2024.html
+"""
+
 # In[1]:
 
 import sys
