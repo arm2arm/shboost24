@@ -33,7 +33,9 @@ from sklearn.metrics import roc_auc_score
 
 
 from constants import  *
-from ..mlflow_env import *
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mlflow_env import *
 
 
 # In[2]:
@@ -72,9 +74,10 @@ def eval_metrics(actual, pred):
 
 
 # TODO optimize for DASK
-def fetch_data(fpath="../../gaiadr3/combined_trainingset2_with_xp_norm.ONE.parq"):
+def fetch_data(fpath="data/combined_trainingset2_with_xp_norm.ONE.parq", frac=0.01):
     #df=pd.read_csv(fpath).set_index("source_id")
-    df=pd.read_parquet(fpath)
+    df=pd.read_parquet(fpath).sample(frac=frac, random_state=42)
+    print(f"we read the data:done: got Nstars={len(df)}")
     return df
 
 def okay_condition(trainingset, label="met50"):
@@ -154,25 +157,23 @@ def clean_data_by_nan(rawdata):
 # In[3]:
 
 parser = argparse.ArgumentParser(description='Process SH values.')
-parser.add_argument('integer', metavar='n', type=int, nargs='+',
+parser.add_argument('integer', metavar='n', type=float, nargs='+',
         help="""
-        an integer defining what to calculate: 
-        0:logdist50,
-        1:'av50',
-        2:'logteff50',
-        3:'logg50',
-        4:'met50',
-        5:'mass50'
+        first value: an integer defining what to calculate (0:logdist50, 1:av50, etc.)
+        second value (optional): percentage of data to sample (default: 1 for 1%)
 """)
 
 args = parser.parse_args()
 #print(args.accumulate(args.integer))
 
-ii=args.integer[0]
-print(ii)
+ii=int(args.integer[0])
+percent = args.integer[1] if len(args.integer) > 1 else 1.0
+frac = percent / 100.0
+
+print(f"Running label index: {ii}, with fraction: {frac}")
 
 label = pred_vec[ii]
-rawdata = fetch_data()
+rawdata = fetch_data(frac=frac)
 #rawdata=clean_data_by_nan(rawdata)
 data=prepare_data(rawdata,label,random_state=42,frac=1.0)
 print(len(data))
@@ -194,7 +195,7 @@ del(rawdata)
 # RUN:
 # cd  D:\Users\arm2arm\Projects\jupyter\MLUtils\mlflow 
 # mlflow ui
-def train_sh23_model(data,params,label="target",mlflow_experiment_id=1):
+def train_sh23_model(data,params,label="target",mlflow_experiment_id=0):
     
     train, test = train_test_split(data)
 
@@ -209,7 +210,7 @@ def train_sh23_model(data,params,label="target",mlflow_experiment_id=1):
     y_test = test[[label]]
     
     # enable auto logging
-    mlflow.set_tracking_uri("http://192.168.111.203:5123")
+    mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.xgboost.autolog()
     dtrain = xgb.DMatrix(X_train, label=y_train, weight=weights)
     dtest =  xgb.DMatrix(X_test, label=y_test)
@@ -268,8 +269,8 @@ min_child_weight=[4,6,8]
 #}
 
 params={
-        #"tree_method": "hist",
-        "tree_method": "gpu_hist",
+        "tree_method": "hist",
+        #"tree_method": "gpu_hist",
        # "tree_method": "exact",
         "random_state":42,
         'learning_rate': 0.01, 
@@ -282,7 +283,7 @@ params={
        }
 
 label = pred_vec[ii]
-mlflow_experiment_id=654086611108235667
+mlflow_experiment_id=0
 print(f"total datasets:{len(data)}")
 
 

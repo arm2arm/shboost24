@@ -89,6 +89,14 @@ Files of interest
 
 Developer helpers
 
+You can use the provided `Makefile` to quickly execute commands:
+- `make install` - Install python dependencies
+- `make start` or `make start-mlflow` - Start MLflow server
+- `make image` - Build the Docker image
+- `make data` - Download the combined training set data file if it doesn't exist
+- `make run-help` - Show run options for mlflowxgb.py
+- `make run-<n> [percent]` - Run mlflowxgb.py with argument `<n>` and optionally `<percent>%` data (e.g., `make run-0 10` runs with 10% data, default is 1)
+
 - scripts/make_sample_parquet.py : create a small synthetic sample at data/sample.parq for smoke tests.
 - scripts/download_from_s3.py : download a public s3/http file into data/ (uses anon S3 access).
 - scripts/run_smoke.sh : helper to run a quick local smoke test (see below).
