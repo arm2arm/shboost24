@@ -241,7 +241,7 @@ def train_sh23_model(data,params,label="target",mlflow_experiment_id=0):
     xgb.set_config(verbosity=1)
     with mlflow.start_run(experiment_id=mlflow_experiment_id,run_name=f"{label}_manual_squarederror_AKh"):
        
-        model = xgb.train(params, dtrain, num_boost_round=1000,verbose_eval=True,
+        model = xgb.train(params, dtrain, num_boost_round=250,verbose_eval=True,
                 #early_stopping_rounds=10,
                 evals=[(dtrain, "train")])
         # Start prediction
