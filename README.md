@@ -93,7 +93,7 @@ You can use the provided `Makefile` to quickly execute commands:
 - `make install` - Install python dependencies
 - `make start` or `make start-mlflow` - Start MLflow server
 - `make image` - Build the Docker image
-- `make data` - Download the combined training set data file if it doesn't exist (requires ~4GB disk space)
+- `make data` - Download the combined training set data file and sample files (`sample_1.parq`, `sample_5.parq`, `sample_10.parq`) if they don't exist (requires ~4GB disk space)
 - `make run-help` - Show run options for mlflowxgb.py
 - `make run-<n> [percent]` - Run mlflowxgb.py with argument `<n>` and optionally `<percent>%` data (e.g., `make run-0 10` runs with 10% data, default is 1)
 

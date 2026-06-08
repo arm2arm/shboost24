@@ -7,7 +7,7 @@ help:
 	@echo "  make start        - Start MLflow server"
 	@echo "  make start-mlflow - Start MLflow server (alias for start)"
 	@echo "  make image        - Build the Docker image"
-	@echo "  make data         - Download the data file if it doesn't exist"
+	@echo "  make data         - Download the data file(s) if they don't exist"
 	@echo "  make run-help     - Show run options for mlflowxgb.py"
 	@echo "  make run-<n>      - Run mlflowxgb.py with argument <n> (e.g., make run-0)"
 
@@ -24,19 +24,25 @@ data/combined_trainingset2_with_xp_norm.ONE.parq:
 	mkdir -p data
 	curl -o data/combined_trainingset2_with_xp_norm.ONE.parq https://s3.data.aip.de:9000/shboost2024/combined_trainingset2_with_xp_norm.ONE.parq
 
-data: data/combined_trainingset2_with_xp_norm.ONE.parq
+data/sample_1.parq:
+	mkdir -p data
+	curl -o data/sample_1.parq https://s3.data.aip.de:9000/shboost2024/sample_1.parq
 
-# Extract arguments for run-% targets (e.g. make run-0 10)
-ifeq ($(firstword $(MAKECMDGOALS)),$(filter run-%,$(firstword $(MAKECMDGOALS))))
-  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(RUN_ARGS):;@:)
-endif
+data/sample_5.parq:
+	mkdir -p data
+	curl -o data/sample_5.parq https://s3.data.aip.de:9000/shboost2024/sample_5.parq
+
+data/sample_10.parq:
+	mkdir -p data
+	curl -o data/sample_10.parq https://s3.data.aip.de:9000/shboost2024/sample_10.parq
+
+data: data/combined_trainingset2_with_xp_norm.ONE.parq data/sample_1.parq data/sample_5.parq data/sample_10.parq
 
 run-help:
 	python src/mlflowxgb.py --help
 
 run-%:
-	python src/mlflowxgb.py $* $(RUN_ARGS) $(filter-out $@,$(MAKECMDGOALS))
+	python src/mlflowxgb.py $* $(filter-out $@,$(MAKECMDGOALS))
 
 # Catch-all rule for extraneous arguments so make doesn't complain
 %:

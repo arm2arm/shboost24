@@ -36,6 +36,7 @@ import matplotlib as mpl
 import mlflow 
 import pandas as pd
 import numpy as np
+import dask.dataframe as dd
 
 import argparse
 
@@ -95,8 +96,12 @@ def eval_metrics(actual, pred):
 # TODO optimize for DASK
 def fetch_data(fpath="data/combined_trainingset2_with_xp_norm.ONE.parq", frac=0.01):
     #df=pd.read_csv(fpath).set_index("source_id")
-    df=pd.read_parquet(fpath).sample(frac=frac, random_state=42)
+    if not (0 < frac <= 1):
+        raise ValueError(f"frac must be in (0, 1], got {frac}")
+    df = pd.read_parquet(fpath).sample(frac=frac, random_state=42)
     print(f"we read the data:done: got Nstars={len(df)}")
+    #df.to_parquet(f"data/sample_{int(frac*100)}.parq", index=False)
+    #exit(0)
     return df
 
 def okay_condition(trainingset, label="met50"):
@@ -179,7 +184,7 @@ parser = argparse.ArgumentParser(description='Process SH values.')
 parser.add_argument('integer', metavar='n', type=float, nargs='+',
         help="""
         first value: an integer defining what to calculate (0:logdist50, 1:av50, etc.)
-        second value (optional): percentage of data to sample (default: 1 for 1%)
+    second value (optional): percentage of data to sample (default: 1 for 1%%)
 """)
 
 args = parser.parse_args()
@@ -192,7 +197,9 @@ frac = percent / 100.0
 print(f"Running label index: {ii}, with fraction: {frac}")
 
 label = pred_vec[ii]
-rawdata = fetch_data(frac=frac)
+#rawdata = fetch_data(frac=frac)
+rawdata = fetch_data(fpath=f"data/sample_5.parq",frac=frac)
+
 #rawdata=clean_data_by_nan(rawdata)
 data=prepare_data(rawdata,label,random_state=42,frac=1.0)
 print(len(data))
