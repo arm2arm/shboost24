@@ -93,7 +93,7 @@ You can use the provided `Makefile` to quickly execute commands:
 - `make install` - Install python dependencies
 - `make start` or `make start-mlflow` - Start MLflow server
 - `make image` - Build the Docker image
-- `make data` - Download the combined training set data file if it doesn't exist
+- `make data` - Download the combined training set data file if it doesn't exist (requires ~4GB disk space)
 - `make run-help` - Show run options for mlflowxgb.py
 - `make run-<n> [percent]` - Run mlflowxgb.py with argument `<n>` and optionally `<percent>%` data (e.g., `make run-0 10` runs with 10% data, default is 1)
 
@@ -108,5 +108,5 @@ Smoke test
    apptainer exec -B /data/mlruns:/data/mlruns -B /home/hermes:/app mlflow.sif /app/entrypoint.sh
    or (server-only): apptainer exec -B /data/mlruns:/data/mlruns -B /home/hermes:/app mlflow.sif mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /data/mlruns --host 0.0.0.0 --port 5123
 3) Run training on sample: python3 src/mlflowxgb.py 0
-   Note: For quick testing and iteration, you can run training on a 5% sample of the data and reduce the `num_boost_round` parameter in `xgb.train` to 250 (from the default 1000) inside `src/mlflowxgb.py`, e.g. using `make run-0 5`.
+   Note: For quick testing and iteration, you can run training on a 5% sample of the data and reduce the `num_boost_round` parameter in `xgb.train` to 250 (from the default 1000) inside `src/mlflowxgb.py`, e.g. using `make run-0 5`. Running with 5% data requires about 4-6GB RAM maximum.
 
