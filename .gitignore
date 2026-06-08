@@ -24,4 +24,5 @@ pip-wheel-metadata/
 *.swo
 .DS_Store
 data/*
-mlartifacts/*
+mlartifacts/**.png
+mlartifacts/
