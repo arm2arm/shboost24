@@ -1,4 +1,12 @@
-.PHONY: install start start-mlflow image
+.PHONY: help install start start-mlflow image
+
+help:
+	@echo "Available commands:"
+	@echo "  make help         - Show this help message"
+	@echo "  make install      - Install python dependencies"
+	@echo "  make start        - Start MLflow server"
+	@echo "  make start-mlflow - Start MLflow server (alias for start)"
+	@echo "  make image        - Build the Docker image"
 
 install:
 	pip install -r requirements.txt
